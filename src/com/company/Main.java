@@ -1,5 +1,6 @@
 package com.company;
 import java.io.*;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,16 +11,16 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         //Initialize all variables needed for tracking
-        String path = System.getenv("PATH");
-        String[] words = null;
+        String[] words;
         ArrayList<String> listOfSentences = new ArrayList<>();
         int sentenceIndex = -1;
         int wordCount = 0;
         HashMap<String, Integer> wordCountMap = new HashMap<>();
         HashMap<String, Integer> lastSentenceMap = new HashMap<>();
         //Parse file into something usable
-        File file = new File(path);
-        Scanner sc = new Scanner(file);
+        URL url = Main.class.getResource("passage.txt");
+        File file = new File(url.getPath());
+        Scanner sc = new Scanner(new FileReader(file));
         //Separate .txt file by sentence
         sc.useDelimiter("[.?!]");
         while (sc.hasNext()) {
@@ -73,7 +74,7 @@ public class Main {
         List<Map.Entry<String, Integer> > list = new LinkedList<>(hm.entrySet());
 
         // Sort the list
-        Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
+        Collections.sort(list, new ValueThenKeyComparator<String, Integer>());
 
         // put data from sorted list to hashmap
         HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
@@ -81,5 +82,20 @@ public class Main {
             temp.put(aa.getKey(), aa.getValue());
         }
         return temp;
+    }
+
+    public static class ValueThenKeyComparator<K extends Comparable<? super K>,
+            V extends Comparable<? super V>>
+            implements Comparator<Map.Entry<K, V>> {
+
+        public int compare(Map.Entry<K, V> a, Map.Entry<K, V> b) {
+            int cmp1 = a.getValue().compareTo(b.getValue());
+            if (cmp1 != 0) {
+                return cmp1;
+            } else {
+                return a.getKey().compareTo(b.getKey());
+            }
+        }
+
     }
 }
