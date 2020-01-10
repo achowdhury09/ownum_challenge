@@ -18,7 +18,7 @@ public class Main {
         HashMap<String, Integer> wordCountMap = new HashMap<>();
         HashMap<String, Integer> lastSentenceMap = new HashMap<>();
         //Parse file into something usable
-        URL url = Main.class.getResource("passage.txt");
+        URL url = Main.class.getResource("/com/company/passage.txt");
         File file = new File(url.getPath());
         Scanner sc = new Scanner(new FileReader(file));
         //Separate .txt file by sentence
